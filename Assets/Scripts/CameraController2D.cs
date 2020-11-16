@@ -11,7 +11,6 @@ public class CameraController2D : MonoBehaviour
 
     void Start()
     {
-        //offset_from_character = player.transform.position - transform.position;
     }
 
     void FixedUpdate()

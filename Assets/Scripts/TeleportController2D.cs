@@ -1,22 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TeleportController2D : MonoBehaviour
 {
-    public Transform destination;
-
+    // public Transform destination;
+    public int nextScene = 1;
 
     void Start()
     {
     }
 
-    void Update()
-    {
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
-        other.transform.position = destination.transform.position;
+        SceneManager.LoadScene(nextScene);
+        Debug.Log("Hit collider, loading scene" + nextScene.ToString());
     }
 }

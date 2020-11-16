@@ -13,6 +13,12 @@ public class CharacterInput2D : MonoBehaviour
 
     void Update()
     {
+        // exit game
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+
         // horizontal movement
         horizontal_input = Input.GetAxisRaw("Horizontal");
 

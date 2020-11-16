@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class CharacterController2D : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class CharacterController2D : MonoBehaviour
 	private float latest_move_command = 0.0f;
 	private bool latest_jump_command = false;
 	private CharacterInput2D character_input2D;
+    public Text hitpointsBar;
 
 	private void Awake()
 	{
@@ -32,7 +34,12 @@ public class CharacterController2D : MonoBehaviour
 
 	private void Update()
 	{
-		// TODO: Limit velocity to avoid speeding down slopes, currently not working
+		// update hp text
+		string fullHp = PlayerStatStorage.inst.maximumHitpoints.ToString();
+		string currentHp = PlayerStatStorage.inst.hitpoints.ToString();
+		hitpointsBar.text = "HP " + currentHp + "/" + fullHp;
+
+		// saturate movement speed
 		if (player_rigidbody.velocity.x > character_input2D.movement_speed)
 		{
 			Vector3 targetVelocity 	= new Vector2(character_input2D.movement_speed, player_rigidbody.velocity.y);
@@ -43,17 +50,6 @@ public class CharacterController2D : MonoBehaviour
 			Vector3 targetVelocity 	= new Vector2(-character_input2D.movement_speed, player_rigidbody.velocity.y);
 			player_rigidbody.velocity 	= targetVelocity;
 		}
-
-		// TODO: Limit velocity while no input is given to move
-		// if (latest_move_command == 0.0f 			&&
-		// 	player_rigidbody.velocity.x != 0.0f 	&&
-		// 	player_rigidbody.velocity.y != 0.0f 	&&
-		// 	player_is_grounded						&&
-		// 	!latest_jump_command)
-		// {
-		// 	Vector3 fixed_velocity = new Vector2(0.0f, 0.0f);
-		// 	player_rigidbody.velocity = fixed_velocity;
-		// }
 	}
 
 	private void FixedUpdate()
