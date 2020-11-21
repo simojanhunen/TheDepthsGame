@@ -27,9 +27,9 @@ public class CharacterController2D : MonoBehaviour
 
 	private void Awake()
 	{
-		character_input2D 	= GetComponent<CharacterInput2D>();
-		player_rigidbody 	= GetComponent<Rigidbody2D>();
-		player 				= GetComponent<Transform>();
+		character_input2D = GetComponent<CharacterInput2D>();
+        player_rigidbody = GetComponent<Rigidbody2D>();
+        player = GetComponent<Transform>();
 	}
 
 	private void Update()
@@ -124,5 +124,10 @@ public class CharacterController2D : MonoBehaviour
 		Vector3 new_scale = transform.localScale;
 		new_scale.x *= -1;
 		transform.localScale = new_scale;
+	}
+	
+	public bool getCharacterDirection()
+	{
+		return player_facing_right;
 	}
 }

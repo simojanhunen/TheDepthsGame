@@ -1,3 +1,2 @@
-- Add damage system
 - Add enemy movement
 - Add titlescreen

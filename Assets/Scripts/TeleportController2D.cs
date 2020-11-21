@@ -15,6 +15,5 @@ public class TeleportController2D : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         SceneManager.LoadScene(nextScene);
-        Debug.Log("Hit collider, loading scene" + nextScene.ToString());
     }
 }
