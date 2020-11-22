@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterInput2D : MonoBehaviour
 {
@@ -95,12 +96,14 @@ public class CharacterInput2D : MonoBehaviour
 
     void PlayerTakeDamage(float damage)
     {
+        animator.SetTrigger("PlayerTakeHit");
         stat_controller.hitpoints -= damage;
 
         if (stat_controller.hitpoints <= 0)
         {
-            Destroy(gameObject);
-            // TODO: Add game over scene
+            animator.SetTrigger("PlayerDeath");
+            SceneManager.LoadScene(6);
+            Destroy(gameObject, 1.5f);
         }
     }
 }

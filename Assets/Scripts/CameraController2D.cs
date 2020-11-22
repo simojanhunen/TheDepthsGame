@@ -5,13 +5,8 @@ using UnityEngine;
 public class CameraController2D : MonoBehaviour
 {
     public GameObject player;
-    private Vector3 offset_from_character;
     public float Smoothing = 0.13f;
-    public float Y_smoothing_multiplier = 2f;
-
-    void Start()
-    {
-    }
+    public float JumpSmoothingXplier = 2.0f;
 
     void FixedUpdate()
     {
@@ -29,7 +24,7 @@ public class CameraController2D : MonoBehaviour
         }
         else
         {
-            targetPos.y = Mathf.MoveTowards(transform.position.y, player.transform.position.y, Smoothing * Y_smoothing_multiplier);
+            targetPos.y = Mathf.MoveTowards(transform.position.y, player.transform.position.y, Smoothing * JumpSmoothingXplier);
         }
 
         // Z coordinate shouldn't come from player (2D game), so use cameras own.

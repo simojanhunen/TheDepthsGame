@@ -5,15 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class TeleportController2D : MonoBehaviour
 {
-    // public Transform destination;
-    public int nextScene = 1;
-
-    void Start()
+    void OnTriggerEnter2D(Collider2D collider)
     {
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        SceneManager.LoadScene(nextScene);
+        if (collider.name == "Player")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 }

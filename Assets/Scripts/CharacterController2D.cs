@@ -4,31 +4,28 @@ using UnityEngine.UI;
 
 public class CharacterController2D : MonoBehaviour
 {
-	// inputs for script
-	public float movement_smoothing = 0.1f;
-	public bool enable_controlling_midair = true;
-	public LayerMask ground_layer;
-	public Transform check_ground_using;
+	public float movementSmoothing = 0.1f;
+	public bool enableControlMidair = true;
+	public LayerMask groundLayer;
+	public Transform checkGroundUsing;
 	public Transform player;
 	public Animator anim;
-	public long wait_time_to_grounded_ms = 150;
-
-	// inner implementation
+	public long waitTimeToGroundedMs = 150;
 	private System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-	private float check_if_grounded_radius = 0.2f;
-	private bool player_is_grounded;
-	private bool player_facing_right = true;
-	private Rigidbody2D player_rigidbody;
+	private float checkIfGroundedRadius = 0.2f;
+	private bool playerIsGrounded;
+	private bool playerFacingRight = true;
+	private Rigidbody2D playerRigidbody;
 	private Vector3 velocity = Vector3.zero;
-	private float latest_move_command = 0.0f;
-	private bool latest_jump_command = false;
-	private CharacterInput2D character_input2D;
+	private float latestMoveCommand = 0.0f;
+	private bool latestJumpCommand = false;
+	private CharacterInput2D characterInput2D;
     public Text hitpointsBar;
 
 	private void Awake()
 	{
-		character_input2D = GetComponent<CharacterInput2D>();
-        player_rigidbody = GetComponent<Rigidbody2D>();
+		characterInput2D = GetComponent<CharacterInput2D>();
+        playerRigidbody = GetComponent<Rigidbody2D>();
         player = GetComponent<Transform>();
 	}
 
@@ -40,34 +37,34 @@ public class CharacterController2D : MonoBehaviour
 		hitpointsBar.text = "HP " + currentHp + "/" + fullHp;
 
 		// saturate movement speed
-		if (player_rigidbody.velocity.x > character_input2D.movement_speed)
+		if (playerRigidbody.velocity.x > characterInput2D.movement_speed)
 		{
-			Vector3 targetVelocity 	= new Vector2(character_input2D.movement_speed, player_rigidbody.velocity.y);
-			player_rigidbody.velocity 	= targetVelocity;
+			Vector3 targetVelocity 	= new Vector2(characterInput2D.movement_speed, playerRigidbody.velocity.y);
+			playerRigidbody.velocity 	= targetVelocity;
 		}
-		else if (player_rigidbody.velocity.x < -character_input2D.movement_speed)
+		else if (playerRigidbody.velocity.x < -characterInput2D.movement_speed)
 		{
-			Vector3 targetVelocity 	= new Vector2(-character_input2D.movement_speed, player_rigidbody.velocity.y);
-			player_rigidbody.velocity 	= targetVelocity;
+			Vector3 targetVelocity 	= new Vector2(-characterInput2D.movement_speed, playerRigidbody.velocity.y);
+			playerRigidbody.velocity 	= targetVelocity;
 		}
 	}
 
 	private void FixedUpdate()
 	{
 		// Start stopwatch if player has jumped
-		if (!player_is_grounded)
+		if (!playerIsGrounded)
 		{
 			stopwatch.Start();
 		}
 
-		anim.SetFloat("PlayerHorizontalSpeed", Mathf.Abs(player_rigidbody.velocity.x));
-		anim.SetFloat("PlayerVerticalSpeed", player_rigidbody.velocity.y);
+		anim.SetFloat("PlayerHorizontalSpeed", Mathf.Abs(playerRigidbody.velocity.x));
+		anim.SetFloat("PlayerVerticalSpeed", playerRigidbody.velocity.y);
 
-		bool wasGrounded = player_is_grounded;
-		player_is_grounded = false;
+		bool wasGrounded = playerIsGrounded;
+		playerIsGrounded = false;
 
 		// check overlap between ground_layer and check_ground_using transform using check_if_grounded_radius
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(check_ground_using.position, check_if_grounded_radius, ground_layer);
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(checkGroundUsing.position, checkIfGroundedRadius, groundLayer);
 
 		// loop through all the found colliders
 		for (int i = 0; i < colliders.Length; i++)
@@ -75,10 +72,10 @@ public class CharacterController2D : MonoBehaviour
 			// if found object is not the player (gameObject) -> we're grounded
 			if (colliders[i].gameObject != gameObject)
 			{
-				player_is_grounded = true;
+				playerIsGrounded = true;
 
 				// If parametrized time has passed, turn animation off
-				if (stopwatch.ElapsedMilliseconds > wait_time_to_grounded_ms)
+				if (stopwatch.ElapsedMilliseconds > waitTimeToGroundedMs)
 				{
 					anim.SetBool("PlayerJumping", false);
 					stopwatch.Reset();
@@ -90,28 +87,28 @@ public class CharacterController2D : MonoBehaviour
 	public void ExecuteMoving(float move_command, float movement_speed, bool jumping, float jumping_force)
 	{
 		// save new command as the latest
-		latest_move_command = move_command;
-		latest_jump_command = jumping;
+		latestMoveCommand = move_command;
+		latestJumpCommand = jumping;
 
 		// if grounded and input is to jump
-		if (player_is_grounded && jumping)
+		if (playerIsGrounded && jumping)
 		{
-			player_is_grounded = false;
+			playerIsGrounded = false;
 			anim.SetBool("PlayerJumping", true);
-			player_rigidbody.AddForce(new Vector2(0.0f, jumping_force));
+			playerRigidbody.AddForce(new Vector2(0.0f, jumping_force));
 		}
 
 		// set new velocity
-		if (player_is_grounded || enable_controlling_midair)
+		if (playerIsGrounded || enableControlMidair)
 		{
-			Vector3 new_velocity = new Vector2(move_command * movement_speed, player_rigidbody.velocity.y);
-			player_rigidbody.velocity = Vector3.SmoothDamp(player_rigidbody.velocity, new_velocity, ref velocity, movement_smoothing);
+			Vector3 new_velocity = new Vector2(move_command * movement_speed, playerRigidbody.velocity.y);
+			playerRigidbody.velocity = Vector3.SmoothDamp(playerRigidbody.velocity, new_velocity, ref velocity, movementSmoothing);
 
-			if (move_command > 0 && !player_facing_right)
+			if (move_command > 0 && !playerFacingRight)
 			{
 				FlipXOnCharacterSprite();
 			}
-			else if (move_command < 0 && player_facing_right)
+			else if (move_command < 0 && playerFacingRight)
 			{
 				FlipXOnCharacterSprite();
 			}
@@ -120,7 +117,7 @@ public class CharacterController2D : MonoBehaviour
 
 	private void FlipXOnCharacterSprite()
 	{
-		player_facing_right = !player_facing_right;
+		playerFacingRight = !playerFacingRight;
 		Vector3 new_scale = transform.localScale;
 		new_scale.x *= -1;
 		transform.localScale = new_scale;
@@ -128,6 +125,6 @@ public class CharacterController2D : MonoBehaviour
 	
 	public bool getCharacterDirection()
 	{
-		return player_facing_right;
+		return playerFacingRight;
 	}
 }
